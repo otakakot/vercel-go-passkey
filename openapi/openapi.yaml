@@ -1,0 +1,179 @@
+openapi: 3.0.3
+info:
+  title: vercel-go-passkey
+  description: |-
+    Vercel Go Passkey
+  termsOfService: https://localhost:8080
+  contact:
+    email: kotaro.otaka@example.com
+  license:
+    name: MIT
+  version: 0.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: WebAuthn
+    description: WebAuthn
+paths:
+  /:
+    get:
+      tags:
+        - WebAuthn
+      summary: Top Page
+      description: Top Page
+      operationId: root
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+                format: binary
+  /attestation:
+    description: https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/Attestation_and_Assertion#attestation
+    get:
+      tags:
+        - WebAuthn
+      summary: Initialize Attestation
+      description: Initialize Attestation
+      operationId: initializeAttestation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitializeAttestationResponse'
+          headers:
+            Set-Cookie:
+              description: Set-Cookie
+              schema:
+                type: string
+        default:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - WebAuthn
+      summary: Finalize Attestation
+      description: Finalize Attestation
+      operationId: finalizeAttestation
+      parameters:
+        - name: __attestation__
+          in: cookie
+          description: session
+          required: true
+          schema:
+            type: string
+            example: session
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinalizeAttestationRequest'
+      responses:
+        '201':
+          description: Created
+        default:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /assertion:
+    description: https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/Attestation_and_Assertion#assertion
+    get:
+      tags:
+        - WebAuthn
+      summary: Initialize Assertion
+      description: Initialize Assertion
+      operationId: initializeAssertion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitializeAssertionRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitializeAssertionResponse'
+          headers:
+            Set-Cookie:
+              description: Set-Cookie
+              schema:
+                type: string
+        default:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - WebAuthn
+      summary: Finalize Assertion
+      description: Finalize Assertion
+      operationId: finalizeAssertion
+      parameters:
+        - name: __assertion__
+          in: cookie
+          description: session
+          required: true
+          schema:
+            type: string
+            example: session
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinalizeAssertionRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinalizeAssertionResponse'
+        default:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    InitializeAttestationResponse:
+      type: object
+      description: Initialize Attestation Response
+    InitializeAssertionResponse:
+      type: object
+      description: Initialize Assertion Response
+    FinalizeAttestationRequest:
+      type: object
+      description: Finalize Attestation Request
+    InitializeAssertionRequest:
+      type: object
+      description: Initialize Assertion Response
+    FinalizeAssertionRequest:
+      type: object
+      description: Finalize Assertion Request
+    FinalizeAssertionResponse:
+      type: object
+      description: Finalize Assertion Response
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
