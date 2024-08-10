@@ -26,8 +26,11 @@ down: ## stop the server
 
 .PHONY: deploy
 deploy: ## deploy to vercel
-#	@psqldef --user=${POSTGRES_USER} --password=${POSTGRES_PASSWORD} --host=${POSTGRES_HOST} --port=5432 ${POSTGRES_DATABASE} < schema/schema.sql 
 	@vercel --prod
+
+.PHONY: migrate
+migrate: ## run the migrations
+	@psqldef --user=${POSTGRES_USER} --password=${POSTGRES_PASSWORD} --host=${POSTGRES_HOST} --port=5432 ${POSTGRES_DATABASE} < schema/schema.sql
 
 .PHONY: destroy
 destroy: ## destroy the vercel deployment
@@ -37,6 +40,13 @@ destroy: ## destroy the vercel deployment
 gen: ## generate code.
 	@sqlc generate
 	@go mod tidy
+	@go mod vendor
+
+.PHONY: mod
+mod: ## go mod tidy & go mod vendor
+	@go get -u -t ./...
+	@go mod tidy
+	@go mod vendor
 
 .PHONY: test
 test: ## run the tests
