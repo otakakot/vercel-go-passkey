@@ -23,6 +23,7 @@ psql:
 .PHONY: down
 down: ## stop the server
 	@docker compose --project-name ${APP_NAME} down --volumes
+	@docker rmi ${APP_NAME}-api
 
 .PHONY: deploy
 deploy: ## deploy to vercel
@@ -40,13 +41,11 @@ destroy: ## destroy the vercel deployment
 gen: ## generate code.
 	@sqlc generate
 	@go mod tidy
-	@go mod vendor
 
 .PHONY: mod
 mod: ## go mod tidy & go mod vendor
 	@go get -u -t ./...
 	@go mod tidy
-	@go mod vendor
 
 .PHONY: test
 test: ## run the tests

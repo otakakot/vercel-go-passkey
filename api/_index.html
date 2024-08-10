@@ -24,6 +24,12 @@
                 },
             })
 
+            if (pre.status !== 200) {
+                alert('Failed attestation initialize');
+
+                return;
+            }
+
             const publicKey = await pre.json();
 
             publicKey.challenge = bufferDecode(publicKey.challenge);
@@ -39,8 +45,6 @@
             const credential = await navigator.credentials.create({
                 publicKey: publicKey,
             })
-
-            console.log(credential);
 
             const result = await fetch("/attestation", {
                 method: "POST",
@@ -59,9 +63,11 @@
                 }),
             })
 
-            console.log(result.status);
-
-            alert('attestation completed');
+            if (result.status === 201) {
+                alert('attestation success');
+            } else {
+                alert('attestation failed');
+            }
         });
 
         document.getElementById('assertionButton').addEventListener('click', async () => {
@@ -73,6 +79,12 @@
                 },
             })
 
+            if (pre.status !== 200) {
+                alert('Failed assertion initialize');
+
+                return;
+            }
+
             const publicKey = await pre.json();
 
             publicKey.challenge = bufferDecode(publicKey.challenge);
@@ -80,8 +92,6 @@
             const credential = await navigator.credentials.get({
                 publicKey: publicKey,
             })
-
-            console.log(credential);
 
             const result = await fetch("/assertion", {
                 method: "POST",
@@ -102,9 +112,11 @@
                 }),
             })
 
-            console.log(result.status);
-
-            alert('assertion completed');
+            if (result.status === 200) {
+                alert('assertion success');
+            } else {
+                alert('assertion failed');
+            }
         });
     </script>
 </body>

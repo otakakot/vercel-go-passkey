@@ -1,6 +1,6 @@
 module github.com/otakakot/vercel-go-passkey
 
-go 1.22.5
+go 1.22.6
 
 require (
 	github.com/go-webauthn/webauthn v0.11.1
