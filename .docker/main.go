@@ -4,7 +4,6 @@ import (
 	"cmp"
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -12,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	index "github.com/otakakot/vercel-go-passkey/api"
+	"github.com/otakakot/vercel-go-passkey/api"
 	assertion "github.com/otakakot/vercel-go-passkey/api/assertion"
 	attestation "github.com/otakakot/vercel-go-passkey/api/attestation"
 )
@@ -22,14 +21,14 @@ func main() {
 
 	hdl := http.NewServeMux()
 
-	hdl.HandleFunc("/", index.Handler)
+	hdl.HandleFunc("/", api.Handler)
 
 	hdl.HandleFunc("/attestation", attestation.Handler)
 
 	hdl.HandleFunc("/assertion", assertion.Handler)
 
 	srv := &http.Server{
-		Addr:              fmt.Sprintf(":%s", port),
+		Addr:              ":" + port,
 		Handler:           hdl,
 		ReadHeaderTimeout: 30 * time.Second,
 	}
@@ -41,7 +40,7 @@ func main() {
 	go func() {
 		slog.Info("start server listen")
 
-		if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			panic(err)
 		}
 	}()
