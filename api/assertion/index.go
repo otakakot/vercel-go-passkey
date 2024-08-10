@@ -58,7 +58,7 @@ func Get(
 		return
 	}
 
-	kv, err := kv.New[webauthn.SessionData](req.Context(), os.Getenv("KV_URL"))
+	cache, err := kv.New[webauthn.SessionData](req.Context(), os.Getenv("KV_URL"))
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 
@@ -67,7 +67,7 @@ func Get(
 
 	sid := uuid.New().String()
 
-	if err := kv.Set(req.Context(), sid, *session); err != nil {
+	if err := cache.Set(req.Context(), sid, *session); err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 
 		return
@@ -105,7 +105,7 @@ func Post(
 		return
 	}
 
-	kv, err := kv.New[webauthn.SessionData](req.Context(), os.Getenv("KV_URL"))
+	cache, err := kv.New[webauthn.SessionData](req.Context(), os.Getenv("KV_URL"))
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 
@@ -119,7 +119,7 @@ func Post(
 		return
 	}
 
-	session, err := kv.GetDel(req.Context(), sid.Value)
+	session, err := cache.GetDel(req.Context(), sid.Value)
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 

@@ -17,6 +17,8 @@ servers:
 tags:
   - name: WebAuthn
     description: WebAuthn
+  - name: Health
+    description: Health
 paths:
   /:
     get:
@@ -144,6 +146,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FinalizeAssertionResponse'
+        default:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /health:
+    get:
+      tags:
+        - WebAuthn
+      summary: Health Check
+      description: Health Check
+      operationId: health
+      responses:
+        '200':
+          description: OK
         default:
           description: Internal Server Error
           content:

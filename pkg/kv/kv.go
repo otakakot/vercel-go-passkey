@@ -6,6 +6,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/redis/rueidis"
 )
@@ -20,12 +21,12 @@ func New[T any](
 ) (*KV[T], error) {
 	opt, err := rueidis.ParseURL(address)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse url: %w", err)
+		opt = rueidis.ClientOption{
+			InitAddress: []string{address},
+		}
 	}
 
-	if address == "redis:6379" {
-		opt.InitAddress = []string{address}
-	} else {
+	if strings.HasPrefix(address, "redis://") {
 		opt.TLSConfig = &tls.Config{
 			MinVersion: tls.VersionTLS13,
 		}
@@ -35,13 +36,13 @@ func New[T any](
 
 	cli, err := rueidis.NewClient(opt)
 	if err != nil {
-		return nil, fmt.Errorf("failed new client: %w", err)
+		return nil, fmt.Errorf("failed new kv client: %w", err)
 	}
 
 	ping := cli.B().Ping().Build()
 
 	if err := cli.Do(ctx, ping).Error(); err != nil {
-		return nil, fmt.Errorf("failed to ping: %w", err)
+		return nil, fmt.Errorf("failed to ping kv: %w", err)
 	}
 
 	return &KV[T]{

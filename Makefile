@@ -17,7 +17,7 @@ local: ## run the server locally
 	@docker compose --project-name ${APP_NAME} --file ./.docker/compose.yaml up --detach
 
 .PHONY: psql
-psql:
+psql: ## connect to the local postgres database
 	@docker exec -it ${APP_NAME}-postgres psql -U postgres
 
 .PHONY: down
