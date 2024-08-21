@@ -20,7 +20,7 @@ func New[T any](
 	address string,
 ) (*KV[T], error) {
 	opt, err := rueidis.ParseURL(address)
-	if err != nil {
+	if err != nil || address == "redis:6379" {
 		opt = rueidis.ClientOption{
 			InitAddress: []string{address},
 		}
