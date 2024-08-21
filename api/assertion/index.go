@@ -78,17 +78,13 @@ func Get(
 		Value: sid,
 	})
 
-	res := bytes.Buffer{}
-
-	if err := json.NewEncoder(&res).Encode(assertion.Response); err != nil {
+	if err := json.NewEncoder(rw).Encode(assertion.Response); err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
 
 	rw.Header().Set("Content-Type", "application/json")
-
-	rw.Write(res.Bytes())
 }
 
 func Post(
