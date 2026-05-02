@@ -1,0 +1,6 @@
+.env
+.docker
+openapi
+Makefile
+README.md
+LICENSE

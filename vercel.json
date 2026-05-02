@@ -1,0 +1,32 @@
+{
+    "build": {
+        "env": {
+            "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+        }
+    },
+    "routes": [
+        {
+            "src": "/",
+            "dest": "/api",
+            "methods": [
+                "GET"
+            ]
+        },
+        {
+            "src": "/attestation",
+            "dest": "/api/attestation",
+            "methods": [
+                "GET",
+                "POST"
+            ]
+        },
+        {
+            "src": "/assertion",
+            "dest": "/api/assertion",
+            "methods": [
+                "GET",
+                "POST"
+            ]
+        }
+    ]
+}
